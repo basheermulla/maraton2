@@ -1,29 +1,90 @@
 import './Bg.css';
-import { useState } from "react";
+
+import { useState, useRef } from "react";
+import axios from 'axios';
+
 import logo from './assets/logo.png'
 import banner from './assets/banner.png'
+
 import Original from './Original'
+
 import No_bg from './No_bg'
 
+import Eula from './Eula'
 
 function Bg() {
 
+  const inputElement = useRef();
+
   const [display_no_bg_tab, setdisplay_no_bg_tab] = useState("no");
 
-  const change_tab = (e) => {
-    if (e.target.classList.value == 'no_bg') {
+
+  const [show_eula, setshow_eula] = useState(false);
+
+
+  function change_tab(e) {
+
+    if (e.target.classList.value === 'no_bg') {
       setdisplay_no_bg_tab('no');
     } else {
       setdisplay_no_bg_tab('yes');
     }
 
   }
+
+  function upload_file() {
+    inputElement.current.click();
+  }
+
+  function open_eula() {
+    setshow_eula(true);
+  }
+
+  function close_popup_fun() {
+    setshow_eula(false);
+  }
+
+  function send_file_to_back(e) {
+
+    let data = e.target.files[0];
+
+    //debugger;
+
+    if (data.type === 'image/png' || data.type === 'image/jpg') {
+      //debugger;
+      const formData = new FormData();
+
+      const config = {
+        headers: { 'content-type': 'multipart/form-data' }
+      }
+
+      formData.append(
+        "myFile",
+        data,
+        data.name
+      );
+
+      axios.post(`http://localhost:5000/upload_file`, formData, config)
+        .then(res => {
+          console.log(res);
+        })
+
+    } else {
+      alert('file type not suported');
+    }
+
+
+
+
+  }
+
   return (
     <div className="Bg">
 
       <div className="header">
         <span className='header_text'> העלאת תמונה כדי להסיר את הרקע </span>
-        <button className="header_btn"> העלאת תמונה </button>
+        <button className="header_btn" onClick={upload_file} > העלאת תמונה</button>
+        <input type="file" ref={inputElement} onChange={send_file_to_back} className="input_file" />
         <span className="header_subtext">פורמטים נתמכים png, jpeg</span>
       </div>
 
@@ -42,8 +103,9 @@ function Bg() {
           }
 
           <div className='left_div_footer'>
-            <button className='eula_btn'> תקנון החברה </button>
-            <span className='eula_text'> על ידי העלאת תמונה אתה מסכים לתנאים וההגבלות </span>
+            <button className="eula_btn" onClick={open_eula} >תקנון החברה</button>
+            <span className="eula_text"> על ידי העלאת תמונה אתה מסכים לתנאים וההגבלות </span>
+            {show_eula ? <Eula close_popup={close_popup_fun} /> : ''}
           </div>
 
 

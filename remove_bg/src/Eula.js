@@ -1,17 +1,16 @@
 import './Eula.css';
 
-import { useState, useRef } from "react";
-import close1 from "./assets/icons8-close-30.png"
+import close1 from "./assets/close1.png"
 
 function Eula(props) {
 
     function close_popup() {
-        props.close_popup();
+        props.close_popup(); // Lifting up
     }
     return (
         <div className='eula_div'>
 
-            <img src={close1} onClick={close_popup} />
+            <img src={close1} className='eula_div_img' onClick={close_popup} />
 
             לורם איפסום דולור סיט אמט, קונסקטורר אדיפיסינג אלית הועניב היושבב שערש שמחויט - שלושע ותלברו חשלו שעותלשך וחאית נובש ערששף. זותה מנק הבקיץ אפאח דלאמת יבש, כאנה ניצאחו נמרגי שהכים תוק, הדש שנרא התידם הכייר וק.
 
